@@ -40,6 +40,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <ck_pr.h>
+
 #include "raikkonen.h"
 #include "raikkonen_internal.h"
 #include "finnish.h"
@@ -199,7 +201,7 @@ rk_thread_scheduler(void *arg)
 				case RK_COMMAND_WAITSTATE:
 					memset(&it, 0, sizeof (it));
 					while ((wakestate = rk_config_iterate_state(&rk_config, cur_epoch, &it)) != NULL) {
-						if (wakestate->cap_thread == UINT_MAX) {
+						if (ck_pr_load_32(&wakestate->cap_thread) == UINT_MAX) {
 							continue;
 						}
 

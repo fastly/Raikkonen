@@ -91,6 +91,7 @@ rk_state_enter_internal(struct rk_config *cfg, uint32_t state_id)
 	struct timespec rem;
 	struct rk_state *s;
 	uint32_t td, u, i;
+	uint32_t cap;
 	void *pun;
 	int r;
 
@@ -112,8 +113,10 @@ rk_state_enter_internal(struct rk_config *cfg, uint32_t state_id)
 
 	h = rk_array_first(s->handlers);
 	u = rk_array_len(s->handlers);
-	if (td >= s->cap_thread - 1) {
-		s->cap_thread = UINT_MAX;
+
+	cap = ck_pr_load_32(&s->cap_thread) - 1;
+	if (td >= cap) {
+		ck_pr_store_32(&s->cap_thread, UINT_MAX);
 		if (rk_sema_post(&s->waitstate) == false) {
 			perror("rk_state_enter: rk_sema_post(waitstate)");
 			return UINT_MAX;
