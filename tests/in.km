@@ -1,0 +1,56 @@
+define STATE_PREREAD 0
+t[0]
+	when STATE_PREREAD
+		1: wait
+		2: wait
+		3: wait
+		4: wait
+		5: wait
+		6: wait
+		7: wait
+		8: wait
+		9: wait
+		10: wait
+		11: wait
+		12: wait
+		13: wait
+		14: wait
+		15: wait
+		16: wait
+		N: panic
+	end
+	waitstate
+
+t[1]
+	resume STATE_PREREAD[16]
+	timeout 10ms
+	resume STATE_PREREAD[4]
+	timeout 10ms
+	resume STATE_PREREAD[1]
+	timeout 10ms
+	resume STATE_PREREAD[3]
+	timeout 10ms
+	resume STATE_PREREAD[2]
+	timeout 10ms
+	resume STATE_PREREAD[10]
+	timeout 10ms
+	resume STATE_PREREAD[9]
+	timeout 10ms
+	resume STATE_PREREAD[13]
+	timeout 10ms
+	resume STATE_PREREAD[7]
+	timeout 10ms
+	resume STATE_PREREAD[5]
+	timeout 10ms
+	resume STATE_PREREAD[11]
+	timeout 10ms
+	resume STATE_PREREAD[12]
+	timeout 10ms
+	resume STATE_PREREAD[6]
+	timeout 10ms
+	resume STATE_PREREAD[8]
+	timeout 10ms
+	resume STATE_PREREAD[14]
+	timeout 10ms
+	resume STATE_PREREAD[15]
+

@@ -1,0 +1,7 @@
+*.so
+*.o
+*.a
+
+tests/test
+tests/out.fi
+tests/test.out
