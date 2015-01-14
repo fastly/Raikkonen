@@ -2,6 +2,7 @@ CFLAGS=-ggdb3 -O0 -Wall -Werror --std=gnu99 -D_DEFAULT_SOURCE -fPIC
 INCLUDES=-I../include -I/usr/local/include
 LIBS=
 PTHREAD=
+CC=clang
 
 OBJS=		rk_array.o		\
 		rk_command.o		\
@@ -20,13 +21,13 @@ clean:
 	rm -rf $(OBJS) libraikkonen.a libraikkonen.so
 
 raikkonen.o: raikkonen.c
-	gcc $(CFLAGS) $(INCLUDES) -c -o raikkonen.o raikkonen.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o raikkonen.o raikkonen.c
 
 %.o: %.c
-	gcc $(CFLAGS) $(INCLUDES) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 libraikkonen.a: $(OBJS)
 	ar rcs $@ $^
 
 libraikkonen.so: $(OBJS)
-	gcc $(INCLUDES) $^ -fPIC -shared -o libraikkonen.so $(LIBS) $(PTHREAD)
+	$(CC) $(INCLUDES) $^ -fPIC -shared -o libraikkonen.so $(LIBS) $(PTHREAD)

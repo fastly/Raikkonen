@@ -115,7 +115,6 @@ fi_do_timespec(struct timespec *ts, uint8_t unit, uint32_t val)
 {
 	uint32_t q, m;
 
-	q = m = 0;
 	switch (unit) {
 	case FI_BYTECODE_UNIT_SECOND:
 		q = 1;
@@ -607,21 +606,25 @@ fi_read_ota_se(struct rk_run_config *config)
 	}
 
 	if (fi_parse_bytecode(config, bytecode, len) != 0) {
+		free(bytecode);
 		fprintf(rk_log, "fi_read_ota_se: couldn't parse bytecode\n");
 		return fi_write_ei(config);
 	}
 
 	if (fi_read(config->client_fd, &loppu, sizeof (loppu)) !=
 	    sizeof (loppu)) {
+		free(bytecode);
 		fprintf(rk_log, "fi_read_ota_se: loppu missing\n");
 		return fi_write_ei(config);
 	}
 
 	if (memcmp(loppu.prologue, "loppu", sizeof (loppu.prologue))) {
+		free(bytecode);
 		fprintf(rk_log, "fi_read_ota_se: loppu invalid\n");
 		return fi_write_ei(config);
 	}
 
+	free(bytecode);
 	return fi_write_joo(config);
 }
 

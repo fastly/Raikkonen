@@ -2,6 +2,7 @@ CFLAGS=-ggdb3 -O0 -Wall -Werror --std=gnu99 -DRK_ENABLED
 INCLUDES=-I../include -I/usr/local/include
 LIBS=../lib/libraikkonen.a
 PTHREAD=-lpthread
+CC=clang
 
 .PHONY: all clean check
 
@@ -11,7 +12,7 @@ clean:
 	rm -rf test out.fi test.out
 
 test: test.c
-	gcc $(CFLAGS) $(INCLUDES) test.c -o test $(LIBS) $(PTHREAD)
+	$(CC) $(CFLAGS) $(INCLUDES) test.c -o test $(LIBS) $(PTHREAD)
 
 check: test
 	../bin/kimi.pl
