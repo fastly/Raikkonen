@@ -294,6 +294,45 @@ This does not have a direct bytecode interpretation. It is simply there to
 instruct further state-reliant instructions in how to represent the state
 value. The minimum value is 0, the maximum value is `2^32 - 1`.
 
+#### Trigger
+
+Triggers allow us to specify when states should be entered. A trigger can
+be specified to execute on function entry, function exit, when a particular
+source file / line tuple, or binary / address tuple is executed. Triggers
+function similarly to the `define` command in that they represent state or
+callback behavior. However, a `trigger` command does result in bytecode that
+is sent to the traced process, and can allow tracing to occur without
+manual program instrumentation.
+
+The `trigger` command has a few forms:
+
+    trigger state STATE_SCHED src/sched.c:123
+    trigger state STATE_FOO libfoo.so:foo_start
+    trigger state STATE_BAR foobard:main
+    trigger callback CALLBACK_ENTRY handle_session:entry
+    trigger callback CALLBACK_EXIT handle_session:exit
+
+Because triggers implement dynamic instrumentation functionality, it is
+important to ensure that one enables Raikkonen prior to any code execution
+that may have an associated trigger.
+
+Triggers may be specified globally, in which case they will always execute.
+They may also be specified in the context of an epoch, in which case they
+will only execute if the program is currently executing within that state.
+
+##### Bytecode
+
+    0x74 0x65 0x68 0x64 0xe4 0x00 0x00000000 0x0000 ... 0x00
+    prologue                 s/c? id         len    len end
+
+ * `s/c?` is a single byte that declares whether we are entering a state or
+   executing a callback. A value of 0 represents "state", any non-zero value
+   means "callback".
+ * `id` is the ID of the state or callback to be entered or executed.
+ * `len` is 2 bytes signifying a variable length string containing the tuple
+   to process the trigger
+ * A trailing NUL byte after `len` bytes signifies the end of the message.
+
 #### When
 
 The `when` command provides an interface for specifying behavior when a
@@ -685,6 +724,8 @@ Of course, I'm entirely ignoring the Win32 API. But MinGW wraps
 special case. It's almost worth sending a patch to XNU.
 
 ## TODO
+
+ * Implement triggers
 
  * Ensure Kimi is specified in such a way that it is impossible to write race
    conditions into the race detection.
