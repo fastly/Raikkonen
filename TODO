@@ -1,0 +1,38 @@
+# TODO
+
+ * Come up with a reasonable design for and implement triggers. Trigger
+   installation probably needs to happen by some external process. This
+   probably means that fi_client needs to provide this support (which is okay
+   because it needs to handle callbacks and such anyway), but also means that
+   it needs to understand Finnish.
+
+ * Add the notion of a critical section in. When rk_state_enter resumes from a
+   waitstate with multiple threads, it's possible that another resume happens
+   immediately afterwards. For designing tests, it's useful to make the
+   scheduler not do anything until we "exit" the racy state.
+
+ * Ensure Kimi is specified in such a way that it is impossible to write race
+   conditions into the race detection.
+ 
+ * Make rk_state_enter an inline wrapper that checks a flag on the state
+   struct before it bothers calling into anything.
+ 
+ * Fix fi_client to actually care a bit more about the protocol.
+
+ * Fix the server-side Finnish implementation to care a bit more about the
+   protocol. (CRC32 comes to mind.)
+
+ * Flesh out the README to describe the public API and integration of
+   internals to additional language backends.
+
+ * Make epoch transition notification (to test runner) work.
+
+ * Add support for callback data passing.
+
+ * Add support for running arbitrary callbacks to test runner.
+
+ * Add a tool that reads a list of defined states and generates a header file
+   as well as writes a list of states usable in Kimi scripts.
+
+ * Add more useful tests
+

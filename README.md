@@ -688,7 +688,7 @@ Integrating Raikkonen into your software is relatively simple:
     use for pushing the config to the running program.
  5. Call `rk_start`, passing the address of your `union rk_sockaddr`.
 
-A minimal [test file][6] shows this process.
+A minimal [test file][5] shows this process.
 
 The instrumented binary will pause until a configuration is loaded. To load a
 configuration, first compile it with `bin/kimi.pl -i in.km -o out.fi`. Then
@@ -700,61 +700,22 @@ send the configuration to your program by running
 ### UTF-8
 
 This software used to be written in UTF-8, but apparently that's still too
-complex for "modern" compilers, editors, and build utilities.
+complex for "modern" compilers, editors, build utilities, and filesystems.
 
 ### Semaphores
 
-[Apple really got my goat][5]. OS X does not implement POSIX unnamed
-semaphores because of reasons that seem reasonable at the surface, but I find
-really questionable.
+[Apple really got my goat][6].
 
-While it is silly that both named and unnamed semaphores must resolve to the
-same `sem_t` type (which is a POSIX stupidity), and it is also silly that
-the unnamed interface is an optional standard, Apple's leaving it out is a
-pain. The `sem_t` type exists, and the only way to find out that this doesn't
-work is to realize that `sem_init(3)` is returning `ENOSYS`.
+### ptrace
 
-The real issue here isn't necessarily that unnamed semaphores aren't
-implemented in OS X, it's that there's no documentation on it and absolutely no
-official suggestion of what to use otherwise. SYSV semaphores and named
-semaphores don't cut it. GCD isn't portable. But for now, GCD is what we use.
-
-Of course, I'm entirely ignoring the Win32 API. But MinGW wraps
-`CreateSemaphore`, so that makes OS X the only operating system that I need to
-special case. It's almost worth sending a patch to XNU.
-
-## TODO
-
- * Implement triggers
-
- * Ensure Kimi is specified in such a way that it is impossible to write race
-   conditions into the race detection.
- 
- * Make rk_state_enter an inline wrapper that checks a flag on the state
-   struct before it bothers calling into anything.
- 
- * Fix fi_client to actually care a bit more about the protocol.
-
- * Fix the server-side Finnish implementation to care a bit more about the
-   protocol. (CRC32 comes to mind.)
-
- * Flesh out the README to describe the public API and integration of
-   internals to additional language backends.
-
- * Make epoch transition notification (to test runner) work.
-
- * Add support for callback data passing.
-
- * Add support for running arbitrary callbacks to test runner.
-
- * Add a tool that reads a list of defined states and generates a header file
-   as well as writes a list of states usable in Kimi scripts.
-
- * Add more useful tests
+["A lot of people seem to move to Mac OS X from a Linux or BSD background and
+therefore expect the ptrace() syscall to be useful."][7]
 
 [1]: http://en.wikipedia.org/wiki/Kimi_R%C3%A4ikk%C3%B6nen "Kimi Räikkönen"
 [2]: http://spinroot.com/spin/whatispin.html "Spin"
 [3]: https://code.google.com/p/thread-sanitizer/ "ThreadSanitizer"
 [4]: http://en.wikipedia.org/wiki/Finnish_language "Finnish Language"
-[5]: http://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w/27847103#27847103 "sem_init on OS X"
-[6]: tests/test.c "test.c"
+[5]: tests/test.c "test.c"
+[6]: http://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w/27847103#27847103 "sem_init on OS X"
+[7]: http://uninformed.org/index.cgi?v=4&a=3&p=14 "Replacing ptrace()"
+
